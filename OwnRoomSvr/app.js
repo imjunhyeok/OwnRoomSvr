@@ -29,7 +29,24 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+// mongodb server url
+var url = 'mongodb://localhost:27017/ownroom';
+var database;
+app.get('/user/info', function(req, res){
+	var collection = database.collection('userinfo');
+	collection.find({}).toArray(function(err, docs){
+		assert.equal(err, null);
+		console.log("Found the following records");
+		res.json(docs);
+	});
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
+  MongoClient.connect(url, function(err, db){
+	  console.log("Connected sucessfully to server");
+	  database = db;
+  });
 });
