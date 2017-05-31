@@ -44,8 +44,13 @@ app.get('/user/info', function(req, res){
 });
 
 app.get('/user/signin', function(req, res){
-	var collection = database.collection;
-	
+	var collection = database.collection('userinfo');
+	var usrid = req.param('usrid');
+	collection.find({"usrid": usrid}).toArray(function(err, docs){
+		assert.equal(err, null);
+		console.log("Found the following records");
+		res.json(docs);
+	});
 });
 
 http.createServer(app).listen(app.get('port'), function(){
